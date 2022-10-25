@@ -37,7 +37,7 @@ func Test_droneAPI_RegisterDrone(t *testing.T) {
 				payload: strings.NewReader(`{,}`),
 			},
 			wantStatus: http.StatusBadRequest,
-			want:       "invalid character ',' looking for beginning of object key string\n",
+			want:       "Invaild json payload\n",
 		},
 		{
 			name: "Test can not register drone without payload",
@@ -62,6 +62,18 @@ func Test_droneAPI_RegisterDrone(t *testing.T) {
 			},
 			wantStatus: http.StatusCreated,
 			want:       "",
+		},
+		{
+			name: "Test can not register drone with empty body",
+			fields: fields{
+				droneUsecase:      mockUsecase.NewDroneMockUsecase(),
+				medicationUsecase: mockUsecase.NewMedicationMockUsecase(),
+			},
+			args: args{
+				payload: strings.NewReader(``),
+			},
+			wantStatus: http.StatusBadRequest,
+			want:       "Invaild json payload\n",
 		},
 	}
 	for _, tt := range tests {
@@ -263,6 +275,47 @@ func Test_droneAPI_LoadingMedication(t *testing.T) {
 				}
 			}
 
+		})
+	}
+}
+
+func Test_logsAPI_List(t *testing.T) {
+	type fields struct {
+		logsUC usecase.LogUsecase
+	}
+	type args struct {
+		w http.ResponseWriter
+		r *http.Request
+	}
+	tests := []struct {
+		name       string
+		body       io.Reader
+		fields     fields
+		wantStatus int
+		wantBody   string
+	}{
+		{
+			name: "test get all logs",
+			body: http.NoBody,
+			fields: fields{
+				logsUC: mockUsecase.NewlogMockUseCase(),
+			},
+			wantStatus: http.StatusOK,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			api := logsAPI{
+				logsUC: tt.fields.logsUC,
+			}
+			request, _ := http.NewRequest(http.MethodGet, "/api/drone/log", nil)
+			response := httptest.NewRecorder()
+			api.List(response, request)
+			if status := response.Code; status != tt.wantStatus {
+				t.Errorf("handler returned wrong status code: got %v want %v",
+					status, http.StatusOK)
+			}
 		})
 	}
 }

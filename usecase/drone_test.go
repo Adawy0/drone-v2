@@ -5,7 +5,6 @@ import (
 	repo "drone/v2/repository"
 	repoEnity "drone/v2/repository"
 	mosks "drone/v2/repository/mocks"
-	Settings "drone/v2/settings"
 	"fmt"
 	"math/rand"
 	"reflect"
@@ -31,9 +30,9 @@ func Test_droneUsecase_Register(t *testing.T) {
 			d:    &droneUsecase{droneRepo: mosks.NewDroneRepoMock()},
 			args: args{
 				object: DorneObject{
-					Model:   Settings.GetDroneModels()["lightweight"],
+					Model:   "Lightweight",
 					Weight:  100,
-					State:   Settings.GetDroneState()["idle"],
+					State:   "IDLE",
 					Battery: 100,
 				},
 			},
@@ -47,9 +46,9 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(101),
-					Model:        Settings.GetDroneModels()["lightweight"],
+					Model:        "Lightweight",
 					Weight:       100,
-					State:        Settings.GetDroneState()["idle"],
+					State:        "IDLE",
 					Battery:      100,
 				},
 			},
@@ -63,9 +62,9 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(5),
-					Model:        Settings.GetDroneModels()["lightweight"],
+					Model:        "Lightweight",
 					Weight:       100,
-					State:        Settings.GetDroneState()["idle"],
+					State:        "IDLE",
 					Battery:      100,
 				},
 			},
@@ -80,7 +79,7 @@ func Test_droneUsecase_Register(t *testing.T) {
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(50),
 					Weight:       100,
-					State:        Settings.GetDroneState()["idle"],
+					State:        "IDLE",
 					Battery:      100,
 				},
 			},
@@ -94,8 +93,8 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(80),
-					Model:        Settings.GetDroneModels()["lightweight"],
-					State:        Settings.GetDroneState()["idle"],
+					Model:        "Lightweight",
+					State:        "IDLE",
 					Battery:      100,
 				},
 			},
@@ -108,7 +107,7 @@ func Test_droneUsecase_Register(t *testing.T) {
 			d:    &droneUsecase{droneRepo: mosks.NewDroneRepoMock()},
 			args: args{
 				object: DorneObject{
-					State:   Settings.GetDroneState()["idle"],
+					State:   "IDLE",
 					Battery: 100,
 				},
 			},
@@ -123,7 +122,7 @@ func Test_droneUsecase_Register(t *testing.T) {
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(50),
 					Model:        "Model Not exist",
-					State:        Settings.GetDroneState()["idle"],
+					State:        "IDLE",
 					Weight:       250,
 					Battery:      100,
 				},
@@ -138,8 +137,8 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(50),
-					Model:        Settings.GetDroneModels()["lightweight"],
-					State:        Settings.GetDroneState()["idle"],
+					Model:        "Lightweight",
+					State:        "IDLE",
 					Battery:      100,
 					Weight:       501,
 				},
@@ -154,8 +153,8 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(50),
-					Model:        Settings.GetDroneModels()["lightweight"],
-					State:        Settings.GetDroneState()["idle"],
+					Model:        "Lightweight",
+					State:        "IDLE",
 					Battery:      100,
 					Weight:       9,
 				},
@@ -170,7 +169,7 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(50),
-					Model:        Settings.GetDroneModels()["lightweight"],
+					Model:        "Lightweight",
 					State:        "State not exist",
 					Weight:       250,
 					Battery:      100,
@@ -186,8 +185,8 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(50),
-					Model:        Settings.GetDroneModels()["lightweight"],
-					State:        Settings.GetDroneState()["idle"],
+					Model:        "Lightweight",
+					State:        "IDLE",
 					Weight:       250,
 					Battery:      -100,
 				},
@@ -202,8 +201,8 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(50),
-					Model:        Settings.GetDroneModels()["lightweight"],
-					State:        Settings.GetDroneState()["idle"],
+					Model:        "Lightweight",
+					State:        "IDLE",
 					Weight:       250,
 					Battery:      101,
 				},
@@ -218,8 +217,8 @@ func Test_droneUsecase_Register(t *testing.T) {
 			args: args{
 				object: DorneObject{
 					SerialNumber: generateRandomSerialNumber(50),
-					Model:        Settings.GetDroneModels()["lightweight"],
-					State:        Settings.GetDroneState()["idle"],
+					Model:        "Lightweight",
+					State:        "IDLE",
 					Weight:       250,
 					Battery:      100,
 				},
@@ -428,17 +427,17 @@ func Test_validateDroneForLoadingMedication(t *testing.T) {
 		wantMsg string
 	}{
 		{
-			name: "test can not add mediaction that has weight more than 500",
+			name: "test can not add mediaction that has weight more that drone weight",
 			args: args{
 				drone: repoEnity.Drone{
-					Weight:          500,
+					Weight:          300,
 					BatteryCapacity: 100,
 					CurrentPayload:  0,
 				},
-				weight: 501,
+				weight: 400,
 			},
 			wantErr: true,
-			wantMsg: fmt.Sprintf(`drone can not be loaded with %f weight, because current weight is %f and Max weight is %d`, 501.000000, 0.000000, Settings.MAX_WEIGHT),
+			wantMsg: fmt.Sprintf(`drone can not be loaded with %f weight, because current weight is %f and Max weight is %f`, 400.000000, 0.000000, 300.000000),
 		},
 		{
 			name: "test can not add mediaction to drone that bettary level less that 25",
@@ -498,7 +497,7 @@ func Test_droneUsecase_CheckLoadingMedication(t *testing.T) {
 			args: args{
 				id: 1,
 			},
-			want:     Settings.GetDroneState()["idle"],
+			want:     "IDLE",
 			errorMsg: "",
 		},
 		{
@@ -509,7 +508,7 @@ func Test_droneUsecase_CheckLoadingMedication(t *testing.T) {
 			args: args{
 				id: 2,
 			},
-			want:     Settings.GetDroneState()["loading"],
+			want:     "LOADING",
 			errorMsg: "",
 		},
 		{
@@ -520,7 +519,7 @@ func Test_droneUsecase_CheckLoadingMedication(t *testing.T) {
 			args: args{
 				id: 3,
 			},
-			want:     Settings.GetDroneState()["loaded"],
+			want:     "LOADED",
 			errorMsg: "",
 		},
 	}

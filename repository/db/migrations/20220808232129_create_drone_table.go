@@ -2,6 +2,7 @@ package main
 
 import (
 	entity "drone/v2/repository"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -29,11 +30,22 @@ func Up_20220808232129(txn *gorm.DB) {
 	}
 	txn.AutoMigrate(&Medication{})
 
+	type Log struct {
+		ID              int            `json:"-" gorm:"primaryKey"`
+		CreatedAt       time.Time      `json:"date"`
+		UpdatedAt       time.Time      `json:"-"`
+		DeletedAt       gorm.DeletedAt `json:"-"`
+		DroneID         int
+		BatteryCapacity int
+		DroneState      string
+	}
+	txn.AutoMigrate(&Log{})
 }
 
 // Down is executed when this migration is rolled back
 func Down_20220808232129(txn *gorm.DB) {
 	txn.Migrator().DropTable("drone")
 	txn.Migrator().DropTable("medication")
+	txn.Migrator().DropTable("logs")
 
 }

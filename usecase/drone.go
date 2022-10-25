@@ -3,7 +3,6 @@ package usecase
 import (
 	repo "drone/v2/repository"
 	repoEnity "drone/v2/repository"
-	settings "drone/v2/settings"
 	"drone/v2/utils"
 	"errors"
 	"fmt"
@@ -92,8 +91,8 @@ func validateDroneForLoadingMedication(drone repoEnity.Drone, weight float32) er
 		errorMsg := fmt.Sprintf(`drone can not be loaded because battery capacity less that %d`, drone.BatteryCapacity)
 		return errors.New(errorMsg)
 	}
-	if drone.CurrentPayload+weight > float32(settings.MAX_WEIGHT) {
-		errorMsg := fmt.Sprintf(`drone can not be loaded with %f weight, because current weight is %f and Max weight is %d`, weight, drone.CurrentPayload, settings.MAX_WEIGHT)
+	if drone.CurrentPayload+weight > drone.Weight {
+		errorMsg := fmt.Sprintf(`drone can not be loaded with %f weight, because current weight is %f and Max weight is %f`, weight, drone.CurrentPayload, drone.Weight)
 		return errors.New(errorMsg)
 	}
 	return nil
@@ -101,4 +100,5 @@ func validateDroneForLoadingMedication(drone repoEnity.Drone, weight float32) er
 
 func (d *droneUsecase) CheckDronesBatteries() {
 	d.droneRepo.ReduceBatteries()
+
 }
