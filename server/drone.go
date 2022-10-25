@@ -39,13 +39,13 @@ func (api *droneAPI) RegisterDrone(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&drone)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Invaild json payload", http.StatusBadRequest)
 		return
 	}
 
 	id, err := api.droneUsecase.RegisterDrone(usecaseEntity.DorneObject(drone))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	var p RegisterDronePayload
@@ -73,7 +73,7 @@ func (api *droneAPI) RegisterMedication(w http.ResponseWriter, r *http.Request) 
 	}
 	id, err := api.medicationUsecase.RegisterMedication(usecaseEntity.MedicationObject(medication))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	payload := RegisterMediactionPayload{

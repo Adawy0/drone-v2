@@ -10,6 +10,7 @@ import (
 
 type APIs struct {
 	DroneAPI IDroneAPI
+	LogsAPI  LogsAPI
 }
 
 func StartServer(apis APIs) {
@@ -23,6 +24,7 @@ func StartServer(apis APIs) {
 	droneSubRouter.HandleFunc("/{id}/load-medication", apis.DroneAPI.LoadingMedication).Methods("POST")
 	droneSubRouter.HandleFunc("/{id}/check-battery", apis.DroneAPI.CheckDroneBattery).Methods("GET")
 	droneSubRouter.HandleFunc("/available-drone", apis.DroneAPI.CheckAvailableDrones).Methods("GET")
+	droneSubRouter.HandleFunc("/log", apis.LogsAPI.List).Methods("GET")
 	start(*port, r)
 }
 

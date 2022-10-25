@@ -1,5 +1,11 @@
 package repository
 
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
 type Medication struct {
 	Name    string `json:"name" gorm:"uniqueIndex"`
 	Code    string `json:"code" gorm:"primaryKey"`
@@ -25,4 +31,18 @@ type Drone struct {
 
 func (Drone) TableName() string {
 	return `"drone"."drones"`
+}
+
+type Log struct {
+	ID              int            `json:"-" gorm:"primaryKey"`
+	CreatedAt       time.Time      `json:"date"`
+	UpdatedAt       time.Time      `json:"-"`
+	DeletedAt       gorm.DeletedAt `json:"-"`
+	DroneID         int
+	BatteryCapacity int
+	DroneState      string
+}
+
+func (Log) TableName() string {
+	return `"drone"."logs"`
 }

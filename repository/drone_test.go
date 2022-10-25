@@ -1,7 +1,6 @@
 package repository
 
 import (
-	settings "drone/v2/settings"
 	"fmt"
 	"os"
 	"reflect"
@@ -49,8 +48,8 @@ func Test_droneRepo_Create(t *testing.T) {
 				drone: &Drone{
 					SerialNumber:    "serial 1",
 					Weight:          300,
-					State:           "idle",
-					Model:           "lightweight",
+					State:           "IDLE",
+					Model:           "Lightweight",
 					BatteryCapacity: 100,
 					CurrentPayload:  0,
 				},
@@ -61,8 +60,8 @@ func Test_droneRepo_Create(t *testing.T) {
 			wantObject: Drone{
 				SerialNumber:    "serial 1",
 				Weight:          300,
-				State:           settings.GetDroneState()["idle"],
-				Model:           settings.GetDroneModels()["lightweight"],
+				State:           "IDLE",
+				Model:           "Lightweight",
 				BatteryCapacity: 100,
 				CurrentPayload:  0,
 			},
@@ -77,8 +76,8 @@ func Test_droneRepo_Create(t *testing.T) {
 				drone: &Drone{
 					SerialNumber:    "serial 1",
 					Weight:          300,
-					State:           "idle",
-					Model:           "lightweight",
+					State:           "IDLE",
+					Model:           "Lightweight",
 					BatteryCapacity: 100,
 					CurrentPayload:  0,
 				},
@@ -87,8 +86,8 @@ func Test_droneRepo_Create(t *testing.T) {
 				{
 					SerialNumber:    "serial 1",
 					Weight:          300,
-					State:           "idle",
-					Model:           "lightweight",
+					State:           "IDLE",
+					Model:           "Lightweight",
 					BatteryCapacity: 100,
 					CurrentPayload:  0,
 				},
@@ -107,8 +106,8 @@ func Test_droneRepo_Create(t *testing.T) {
 				drone: &Drone{
 					SerialNumber:    "6qjUThKzS4mdhvCCXh9QEH2tdhYxwbu3rPJYD8tQMQwS456hn4KyzDBh24VHDiFgbZkkMna49agPiydhN5eXTkvieRd9CXv7QrDnF",
 					Weight:          300,
-					State:           "idle",
-					Model:           "lightweight",
+					State:           "IDLE",
+					Model:           "Lightweight",
 					BatteryCapacity: 100,
 					CurrentPayload:  0,
 				},
@@ -128,8 +127,8 @@ func Test_droneRepo_Create(t *testing.T) {
 		// 		drone: &Drone{
 		// 			SerialNumber:    "serial 1",
 		// 			Weight:          501,
-		// 			State:           "idle",
-		// 			Model:           "lightweight",
+		// 			State:           "IDLE",
+		// 			Model:           "Lightweight",
 		// 			BatteryCapacity: 100,
 		// 			CurrentPayload:  0,
 		// 		},
@@ -149,7 +148,7 @@ func Test_droneRepo_Create(t *testing.T) {
 		// 		drone: &Drone{
 		// 			SerialNumber:    "serial 1",
 		// 			Weight:          230,
-		// 			State:           "idle",
+		// 			State:           "IDLE",
 		// 			Model:           "test model",
 		// 			BatteryCapacity: 100,
 		// 			CurrentPayload:  0,
@@ -171,7 +170,7 @@ func Test_droneRepo_Create(t *testing.T) {
 		// 			SerialNumber:    "serial 1",
 		// 			Weight:          400,
 		// 			State:           "test state",
-		// 			Model:           "lightweight",
+		// 			Model:           "Lightweight",
 		// 			BatteryCapacity: 100,
 		// 			CurrentPayload:  0,
 		// 		},
@@ -191,8 +190,8 @@ func Test_droneRepo_Create(t *testing.T) {
 		// 		drone: &Drone{
 		// 			SerialNumber:    "serial 1",
 		// 			Weight:          400,
-		// 			State:           settings.GetDroneState()["idle"],
-		// 			Model:           "lightweight",
+		// 			State:           "IDLE"],
+		// 			Model:           "Lightweight",
 		// 			BatteryCapacity: -10,
 		// 			CurrentPayload:  0,
 		// 		},
@@ -500,7 +499,7 @@ func Test_droneRepo_CheckLoadingMedication(t *testing.T) {
 					Model:        "Lightweight",
 				},
 			},
-			want:    settings.GetDroneState()["idle"],
+			want:    "IDLE",
 			wantErr: false,
 		},
 	}
@@ -552,46 +551,46 @@ func Test_droneRepo_AvailableDroneForLoading(t *testing.T) {
 			fixtures: []Drone{
 				{
 					SerialNumber: "ser 1",
-					State:        settings.GetDroneState()["idle"],
-					Model:        settings.GetDroneModels()["lightweight"],
+					State:        "IDLE",
+					Model:        "Lightweight",
 				},
 				{
 					SerialNumber: "ser 2",
-					State:        settings.GetDroneState()["loading"],
-					Model:        settings.GetDroneModels()["lightweight"],
+					State:        "loading",
+					Model:        "Lightweight",
 				},
 				{
 					SerialNumber: "ser 3",
-					State:        settings.GetDroneState()["loaded"],
-					Model:        settings.GetDroneModels()["lightweight"],
+					State:        "loaded",
+					Model:        "Lightweight",
 				},
 				{
 					SerialNumber: "ser 4",
-					State:        settings.GetDroneState()["delivering"],
-					Model:        settings.GetDroneModels()["lightweight"],
+					State:        "delivering",
+					Model:        "Lightweight",
 				},
 				{
 					SerialNumber: "ser 5",
-					State:        settings.GetDroneState()["delivered"],
-					Model:        settings.GetDroneModels()["lightweight"],
+					State:        "delivered",
+					Model:        "Lightweight",
 				},
 				{
 					SerialNumber: "ser 7",
-					State:        settings.GetDroneState()["idle"],
-					Model:        settings.GetDroneModels()["lightweight"],
+					State:        "IDLE",
+					Model:        "Lightweight",
 				},
 			},
 			want: []Drone{
 				{
 					SerialNumber:    "ser 1",
-					State:           settings.GetDroneState()["idle"],
-					Model:           settings.GetDroneModels()["lightweight"],
+					State:           "IDLE",
+					Model:           "Lightweight",
 					BatteryCapacity: 100,
 				},
 				{
 					SerialNumber:    "ser 7",
-					State:           settings.GetDroneState()["idle"],
-					Model:           settings.GetDroneModels()["lightweight"],
+					State:           "IDLE",
+					Model:           "Lightweight",
 					BatteryCapacity: 100,
 				},
 			},
@@ -653,8 +652,8 @@ func Test_droneRepo_CheckBatteryLevel(t *testing.T) {
 			fixtures: []Drone{
 				{
 					SerialNumber: "ser 1",
-					State:        settings.GetDroneState()["idle"],
-					Model:        settings.GetDroneModels()["lightweight"],
+					State:        "IDLE",
+					Model:        "Lightweight",
 				},
 			},
 			want:    100,
@@ -671,8 +670,8 @@ func Test_droneRepo_CheckBatteryLevel(t *testing.T) {
 			fixtures: []Drone{
 				{
 					SerialNumber:    "ser 1",
-					State:           settings.GetDroneState()["idle"],
-					Model:           settings.GetDroneModels()["lightweight"],
+					State:           "IDLE",
+					Model:           "Lightweight",
 					BatteryCapacity: 50,
 				},
 			},
@@ -710,6 +709,7 @@ func Test_droneRepo_CheckBatteryLevel(t *testing.T) {
 	}
 }
 
+//FIXME: import cycle
 func Test_droneRepo_ReduceBatteries(t *testing.T) {
 	type fields struct {
 		client *gorm.DB
@@ -728,13 +728,13 @@ func Test_droneRepo_ReduceBatteries(t *testing.T) {
 			fixtures: []Drone{
 				{
 					SerialNumber: "ser 1",
-					State:        settings.GetDroneState()["idle"],
-					Model:        settings.GetDroneModels()["lightweight"],
+					State:        "IDLE",
+					Model:        "Lightweight",
 				},
 				{
 					SerialNumber:    "ser 2",
-					State:           settings.GetDroneState()["idle"],
-					Model:           settings.GetDroneModels()["lightweight"],
+					State:           "IDLE",
+					Model:           "Lightweight",
 					BatteryCapacity: 40,
 				},
 			},
@@ -756,6 +756,7 @@ func Test_droneRepo_ReduceBatteries(t *testing.T) {
 
 			d := &droneRepo{
 				client: trx,
+				// logRepo: NewLogRepoMock(),
 			}
 			d.ReduceBatteries()
 			var createDrones []Drone

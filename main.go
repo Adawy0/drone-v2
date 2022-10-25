@@ -29,11 +29,16 @@ func main() {
 		log.Println("cant connect to database")
 		return
 	}
-	droneRepo := repository.NewDroneRepo(DB)
+	logRepo := repository.NewLogRepository(DB)
+	droneRepo := repository.NewDroneRepo(DB, logRepo)
 	droneUseCase := usecase.NewDroneUsecase(droneRepo)
+	logUseCase := usecase.NewlogUseCase(logRepo)
 	droneAPI := server.NewDroneAPI(droneUseCase)
+	logAPI := server.NewLogsAPI(logUseCase)
+
 	apis := server.APIs{
 		DroneAPI: droneAPI,
+		LogsAPI:  logAPI,
 	}
 
 	go runCornJob(droneUseCase)

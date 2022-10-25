@@ -1,8 +1,6 @@
 package repository
 
 import (
-	settings "drone/v2/settings"
-
 	"gorm.io/gorm"
 )
 
@@ -18,12 +16,14 @@ type IDroneRepository interface {
 }
 
 type droneRepo struct {
-	client *gorm.DB
+	client  *gorm.DB
+	logRepo ILogRepository
 }
 
-func NewDroneRepo(client *gorm.DB) IDroneRepository {
+func NewDroneRepo(client *gorm.DB, logRepo ILogRepository) IDroneRepository {
 	return &droneRepo{
-		client: client,
+		client:  client,
+		logRepo: logRepo,
 	}
 }
 
@@ -42,8 +42,8 @@ func (d *droneRepo) Create(drone *Drone) (int, error) {
 	// if _, found := settings.GetDroneState()[drone.State]; !found {
 	// 	return 0, errors.New("can not save drone with state not exist")
 	// }
-	drone.State = settings.GetDroneState()[drone.State]
-	drone.Model = settings.GetDroneModels()[drone.Model]
+	// drone.State = settings.GetDroneState()[drone.State]
+	// drone.Model = settings.GetDroneModels()[drone.Model]
 	result := d.client.Save(&drone)
 	if result.Error != nil {
 		return 0, result.Error
@@ -66,7 +66,7 @@ func (d *droneRepo) AddMedication(id int, medication *Medication) error {
 	}
 	medication.DroneID = drone.ID
 	drone.Medications = append(drone.Medications, *medication)
-	drone.State = settings.GetDroneState()["loading"]
+	drone.State = "Loading"
 	if result := d.client.Save(&drone); result.Error != nil {
 		return result.Error
 	}
@@ -84,7 +84,7 @@ func (d *droneRepo) CheckLoadingMedication(id int) (string, error) {
 
 func (d *droneRepo) AvailableDroneForLoading() []Drone {
 	var availableDrone []Drone
-	result := d.client.Where("state = ?", settings.GetDroneState()["idle"]).Preload("Medications").Find(&availableDrone)
+	result := d.client.Where("state = ?", "IDLE").Preload("Medications").Find(&availableDrone)
 	if result.Error != nil {
 		return []Drone{}
 	}
@@ -112,16 +112,21 @@ func (d *droneRepo) ReduceBatteries() {
 	//TODO: refactor can do this logic using ORM
 	var drones []Drone
 	d.client.Find(&drones)
-	drones = reduceBatteries(drones)
+	drones = d.reduceBatteries(drones)
 	d.client.Save(&drones)
 }
 
-func reduceBatteries(drones []Drone) []Drone {
+func (d *droneRepo) reduceBatteries(drones []Drone) []Drone {
 	var update []Drone
 	for _, o := range drones {
 		if o.BatteryCapacity > 1 {
 			o.BatteryCapacity = o.BatteryCapacity - 1
 			update = append(update, o)
+			d.logRepo.Create(Log{
+				DroneID:         o.ID,
+				DroneState:      o.State,
+				BatteryCapacity: o.BatteryCapacity,
+			})
 		}
 	}
 	return update
